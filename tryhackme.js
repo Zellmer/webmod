@@ -23,10 +23,54 @@ function FancyRooms(){
   $(".room-completed").closest('.room-main').addClass('room-F')
 }
 
+function fancyAnswerFormat(){
+  $(".room-answer-field:not(.z3f):not(:disabled)").each(function(index,value){
+    if(value.placeholder != 'No answer needed'){
+      let place = value.placeholder.split('Answer format: ')[1]
+      console.log(value.placeholder)
+      console.log(getFormat(value.placeholder))
+      value.placeholder = 'Answer format: '+getFormat(place)+'   ('+place+')'
+      $(value).addClass('z3f')
+    }
+  })
+  
+}
+
+function getFormat(value){
+    let f = ''
+    let ret = []
+    let last = {b:'',c:0}
+    for(v of value){
+        if(v == last.b){
+            last.c ++
+        }else{
+            if(last.c != 0){
+                ret.push({b:last.b,c:last.c})
+            }
+            last.b = v
+            last.c = 1
+        }
+    }
+    ret.push({b:last.b,c:last.c})
+    for(r of ret){
+        if(r.c == 1){
+          f += r.b
+        }else if(r.c <= 4){
+          for(let i = 0;i<r.c;i++){
+            f += r.b
+          }
+        }else{
+            f += r.b+'{'+r.c+'}'
+        }
+    }
+    return f
+}
+
 function jload(){
   FancyTask()
   FancyPractice()
   FancyRooms()
+  fancyAnswerFormat()
 }
 
 CSSClass()//nur einmal laden!
